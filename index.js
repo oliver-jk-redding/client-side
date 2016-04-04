@@ -1,29 +1,29 @@
 var xhr = require('xhr')
-var example = require('./views/example.hbs')
-// var request = require('request')
+var example = require('./views/myexample.hbs')
+var catinfo = require('./views/catinfo.hbs')
 
-// xhr.setRequestHeader( 'Api-User-Agent', 'Example/1.0' );
-// xhr.get('https://api.wheretheiss.at/v1/satellites', function(err, data) {
-// var client = new XMLHttpRequest();
-// client.open('GET', 'https://en.wikipedia.org/w/api.php?action=query&titles=Main%20Page&prop=revisions&rvprop=content&format=json');
-// client.setRequestHeader('Access-Control-Allow-Origin', '*');
-// client.send();
+var getCatsButton = document.getElementById("getCats")
+if(getCatsButton) {
+  getCatsButton.addEventListener("click", function() {
+    xhr.get('http://localhost:3000/v1/cats', function(err, data) {
+      if(err) {console.log(err); return}
+      var msg = JSON.parse(data.body)
+      document.body.innerHTML = example(msg);
+      addButtonListeners()
+    })
+  })
+}
 
-
-// xhr.get({
-//     uri: 'https://en.wikipedia.org/w/api.php?action=query&titles=Main%20Page&prop=revisions&rvprop=content&format=json',
-//     headers: {
-//       'Access-Control-Allow-Origin': '*'
-//     }
-//   }, function(err, data) {
-
-xhr.get('~/Workspace/meowtown/meowtown/app.js', function(err, data) {
-// request.get('https://api.wheretheiss.at/v1/satellites', function(err, data) {
-  if(err) {console.log(err); return}
-  console.log(data.body)
-  var msg = JSON.parse(data.body)
-  document.body.innerHTML = example(msg);
-})
-
-
-
+function addButtonListeners() {
+  var getCatButtons = document.querySelectorAll(".cat")
+  for(var i = 0; i < getCatButtons.length; i++) {
+    // var id = getCatButtons[i].id
+    getCatButtons[i].addEventListener("click", function() {
+      xhr.get('http://localhost:3000/v1/cats/' + this.id, function(err, data) {
+        if(err) {console.log(err); return}
+        var msg = JSON.parse(data.body)
+        document.body.innerHTML = catinfo(msg);
+      })
+    })
+  }
+}
